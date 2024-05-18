@@ -1,5 +1,5 @@
 import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
-import React, { useState } from "react";
+import { useState } from "react";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
