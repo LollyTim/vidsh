@@ -1,20 +1,77 @@
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
-import { useState } from "react";
-import { useRouter } from "expo-router";
+import {
+  Alert,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
+import { useState, useEffect } from "react";
+import { useRouter, useNavigation } from "expo-router";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
+import { createUser } from "../../lib/appwrite";
+import { initializeApp } from "@firebase/app";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "@firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA7NPzVymncAW3nGGOZtcnG59lAaYAz-EY",
+  authDomain: "vidsh-5df72.firebaseapp.com",
+  projectId: "vidsh-5df72",
+  storageBucket: "vidsh-5df72.appspot.com",
+  messagingSenderId: "365000814346",
+  appId: "1:365000814346:web:e145dc70b87478b94094f3",
+  measurementId: "G-NYH2N8R256",
+};
+
+const app = initializeApp(firebaseConfig);
 
 const SignUp = () => {
   const router = useRouter();
+  const navigation = useNavigation();
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {};
+  const submit = async () => {
+    console.log(form.email, form.password, form.username);
+    // Add your sign-up logic here
+    if (!form.username || !form.email || !form.password) {
+      Alert.alert("ERROR", "Please fill all the fields");
+      return;
+    }
+    setIsSubmitting(true);
+
+    try {
+      const result = await createUser(form.email, form.password, form.username);
+
+      //set it tto global state....
+
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("ERROR", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSignIn = () => {
     router.push("/sign-in");
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", () => {
+      // Clean up any resources or event listeners here
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -48,7 +105,7 @@ const SignUp = () => {
             otherStyles="mt-7"
           />
           <CustomButton
-            title={"Signup"}
+            title={"Sign Up"}
             containerStyles={"mt-7"}
             handlePress={submit}
             isLoading={isSubmitting}

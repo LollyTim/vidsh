@@ -6,6 +6,7 @@ import { Redirect, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 export default function App() {
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: "100%" }}>

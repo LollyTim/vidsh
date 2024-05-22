@@ -1,17 +1,32 @@
 import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useNavigation } from "expo-router";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
-import { Link } from "expo-router";
 
 const SignIn = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const router = useRouter();
+  const navigation = useNavigation();
+  const [form, setForm] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const submit = () => {};
+
+  const submit = () => {
+    // Add your sign-in logic here
+  };
+
+  const handleSignUp = () => {
+    router.push("/sign-up");
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", () => {
+      // Clean up any resources or event listeners here
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
@@ -21,7 +36,7 @@ const SignIn = () => {
             resizeMode="contain"
             className="w-[115px] h-[35px]"
           />
-          <Text className="text-2xl text-white font-psemibold mt-10  ">
+          <Text className="text-2xl text-white font-psemibold mt-10">
             Log in to Vidsh
           </Text>
           <FormField
@@ -47,12 +62,12 @@ const SignIn = () => {
             <Text className="text-lg text-gray-100 font-pregular">
               Don't have an account?
             </Text>
-            <Link
-              href="/sign-up"
+            <Text
               className="font-psemibold text-secondary text-lg underline"
+              onPress={handleSignUp}
             >
               Sign Up
-            </Link>
+            </Text>
           </View>
         </View>
       </ScrollView>
